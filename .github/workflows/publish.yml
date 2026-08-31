@@ -1,0 +1,30 @@
+name: Publish to NuGet & npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  publish-nuget:
+    name: Publish KrystCore to NuGet.org
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Pack KrystCore.Rules
+        run: dotnet pack src/KrystCore.Rules/KrystCore.Rules.csproj -c Release -o ./dist
+
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
