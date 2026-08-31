@@ -5,24 +5,24 @@ namespace KrystCore.Cli.Commands;
 /// </summary>
 public static class AuditCommand
 {
-    private static readonly string[] ForbiddenTerms =
+    private static readonly string[] DefaultForbiddenTerms =
     [
-        "aartco",
-        "aartco-sa.com",
-        "jouhi",
-        "tenantpack"
+        "tenantpack",
+        "custom_client",
+        "hardcoded_tenant"
     ];
 
     public static int Execute(string[] args)
     {
         var targetDir = ResolveEngineDirectory(args);
+        var forbiddenTerms = ResolveForbiddenTerms(args);
         if (!Directory.Exists(targetDir))
         {
             Console.Error.WriteLine($"[ERROR] Directory not found: {targetDir}");
             return 1;
         }
 
-        Console.WriteLine($"[AUDIT] Scanning Ring 0 directory for isolation breaches: {targetDir}");
+        Console.WriteLine($"[AUDIT] Scanning directory for isolation breaches: {targetDir}");
         var files = Directory.GetFiles(targetDir, "*.cs", SearchOption.AllDirectories)
             .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}") &&
                         !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
@@ -31,7 +31,7 @@ public static class AuditCommand
         var violationCount = 0;
         foreach (var file in files)
         {
-            violationCount += ScanFileForViolations(file);
+            violationCount += ScanFileForViolations(file, forbiddenTerms);
         }
 
         if (violationCount > 0)
@@ -61,7 +61,20 @@ public static class AuditCommand
         return current;
     }
 
-    private static int ScanFileForViolations(string filePath)
+    private static string[] ResolveForbiddenTerms(string[] args)
+    {
+        for (var i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "--terms" && i + 1 < args.Length)
+            {
+                return args[i + 1].Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(t => t.ToLowerInvariant()).ToArray();
+            }
+        }
+        return DefaultForbiddenTerms;
+    }
+
+    private static int ScanFileForViolations(string filePath, string[] forbiddenTerms)
     {
         var violations = 0;
         var lines = File.ReadAllLines(filePath);
@@ -72,11 +85,11 @@ public static class AuditCommand
             if (line.IsEmpty || line.StartsWith("//") || line.StartsWith("/*")) continue;
 
             var lineLower = line.ToString().ToLowerInvariant();
-            foreach (var term in ForbiddenTerms)
+            foreach (var term in forbiddenTerms)
             {
                 if (lineLower.Contains(term))
                 {
-                    Console.Error.WriteLine($"[BREACH] {filePath}:{i + 1} - Found forbidden tenant keyword '{term}'");
+                    Console.Error.WriteLine($"[BREACH] {filePath}:{i + 1} - Found forbidden keyword '{term}'");
                     violations++;
                 }
             }

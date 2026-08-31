@@ -42,7 +42,7 @@ dotnet run --project src/KrystCore.Cli -- audit src/KrystCore.Engine
 Parses and validates a tenant JSON seed file against schema and integrity rules.
 
 ```bash
-dotnet run --project src/KrystCore.Cli -- validate-seed src/Aartco.TenantPack/Seeds/aartco_initial_seed.json
+dotnet run --project src/KrystCore.Cli -- validate-seed src/Logistics.TenantPack/Seeds/logistics_initial_seed.json
 ```
 
 ## License
