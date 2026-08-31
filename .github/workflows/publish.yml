@@ -10,6 +10,7 @@ jobs:
   publish-nuget:
     name: Publish KrystCore to NuGet.org
     runs-on: ubuntu-latest
+    environment: KrystCore-sdks
     permissions:
       id-token: write
       contents: read
