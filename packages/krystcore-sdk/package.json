@@ -1,0 +1,33 @@
+{
+  "name": "@krystcore/sdk",
+  "version": "1.0.0",
+  "description": "High-performance zero-dependency TypeScript SDK for KrystCore enterprise engine.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test --experimental-strip-types tests/**/*.test.ts"
+  },
+  "keywords": [
+    "krystcore",
+    "sdk",
+    "rbac",
+    "bitmask",
+    "ast-rules"
+  ],
+  "author": "KrystCore Ecosystem",
+  "license": "Apache-2.0"
+}

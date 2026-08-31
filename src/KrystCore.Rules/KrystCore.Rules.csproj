@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>KrystCore.Rules</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>InaeDirrimann</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <Description>High-performance sandboxed JSON AST-to-Expression rule compiler and 0-alloc bitmask security kernel.</Description>
+  </PropertyGroup>
+</Project>

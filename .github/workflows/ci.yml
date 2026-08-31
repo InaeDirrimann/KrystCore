@@ -1,0 +1,36 @@
+name: Open Source Tools CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-tools:
+    name: Test TypeScript SDK & .NET CLI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Test TypeScript SDK
+        run: |
+          cd packages/krystcore-sdk
+          node --test --experimental-strip-types tests/**/*.test.ts
+
+      - name: Build .NET CLI & Rules
+        run: |
+          dotnet build src/KrystCore.Cli/KrystCore.Cli.csproj -c Release
+          dotnet build src/KrystCore.Rules/KrystCore.Rules.csproj -c Release
