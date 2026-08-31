@@ -29,10 +29,5 @@ jobs:
       - name: Pack KrystCore.Rules
         run: dotnet pack src/KrystCore.Rules/KrystCore.Rules.csproj -c Release -o ./dist
 
-      - name: NuGet Login (OIDC Exchange)
-        uses: NuGet/login@v1
-        with:
-          user: KrystLab
-
       - name: Push to NuGet.org
-        run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
