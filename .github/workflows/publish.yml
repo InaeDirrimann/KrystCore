@@ -32,7 +32,7 @@ jobs:
       - name: NuGet Login (OIDC Exchange)
         uses: NuGet/login@v1
         with:
-          user: inaedirriman
+          user: InaeDirrimann
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
