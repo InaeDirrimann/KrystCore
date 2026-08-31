@@ -8,7 +8,7 @@
 
 ---
 
-## 📦 What's Inside This Repository
+##  What's Inside This Repository
 
 This repository contains official open-source developer tooling and client libraries under the **Apache-2.0 License**:
 
@@ -33,6 +33,6 @@ npm install @krystcore/sdk
 
 ---
 
-## 📜 License
+## License
 
 Licensed under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE) for details.
