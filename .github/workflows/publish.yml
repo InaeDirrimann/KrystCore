@@ -2,6 +2,8 @@ name: Publish to NuGet & npm
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
@@ -26,6 +28,9 @@ jobs:
 
       - name: Pack KrystCore.Rules
         run: dotnet pack src/KrystCore.Rules/KrystCore.Rules.csproj -c Release -o ./dist
+
+      - name: NuGet Login (OIDC Exchange)
+        uses: NuGet/login@v1
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate
