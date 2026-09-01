@@ -1,5 +1,5 @@
 {
-  "name": "@krystcore/sdk",
+  "name": "@krystlab/sdk",
   "version": "1.0.0",
   "description": "High-performance zero-dependency TypeScript SDK for KrystCore enterprise engine.",
   "type": "module",

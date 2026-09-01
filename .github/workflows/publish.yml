@@ -31,3 +31,24 @@ jobs:
 
       - name: Push to NuGet.org
         run: dotnet nuget push ./dist/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+
+  publish-npm:
+    name: Publish @krystlab/sdk to npmjs.org
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Test & Publish to npm
+        working-directory: packages/krystcore-sdk
+        run: |
+          npm run test
+          npm publish --access public || echo "Version already published"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
