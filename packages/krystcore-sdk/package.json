@@ -1,6 +1,6 @@
 {
   "name": "krystcore",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "High-performance zero-dependency TypeScript SDK for KrystCore enterprise engine.",
   "type": "module",
   "main": "dist/index.js",
