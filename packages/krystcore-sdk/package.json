@@ -1,10 +1,13 @@
 {
   "name": "krystcore",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "High-performance zero-dependency TypeScript SDK for KrystCore enterprise engine.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "kryst": "./bin/kryst.js"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -12,15 +15,12 @@
       "default": "./src/index.ts"
     }
   },
-  "bin": {
-    "kryst": "./bin/kryst.js"
-  },
   "files": [
-    "bin",
     "dist",
     "src",
-    "LICENSE",
-    "README.md"
+    "bin",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node --test --experimental-strip-types tests/**/*.test.ts"
