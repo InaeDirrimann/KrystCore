@@ -5,11 +5,15 @@ namespace KrystCore.Rules;
 
 /// <summary>
 /// Compiles sandboxed JSON AST rule definitions into strongly typed expression trees.
-/// Hard depth cap of 10 enforced to eliminate stack overflows.
+/// Hard depth cap of 32 enforced to eliminate stack overflows.
 /// </summary>
 public static class RuleExpressionCompiler
 {
     private const int MaxAstDepth = 32;
+    private static readonly System.Reflection.MethodInfo ConvertToDecimalMethod =
+        typeof(Convert).GetMethod(nameof(Convert.ToDecimal), [typeof(object)])!;
+    private static readonly System.Reflection.MethodInfo GetFieldValueMethod =
+        typeof(RuleContextAccessor).GetMethod(nameof(RuleContextAccessor.GetFieldValue))!;
 
     public static Func<IReadOnlyDictionary<string, object?>, bool> CompileRule(JsonElement ast)
     {
@@ -114,8 +118,7 @@ public static class RuleExpressionCompiler
         {
             var fieldName = fieldProp.GetString() ?? string.Empty;
             var objExpr = ExtractContextValue(ctx, fieldName, typeof(object));
-            var convertMethod = typeof(Convert).GetMethod(nameof(Convert.ToDecimal), [typeof(object)])!;
-            return Expression.Call(convertMethod, objExpr);
+            return Expression.Call(ConvertToDecimalMethod, objExpr);
         }
         if (valNode.TryGetProperty("literal", out var litProp))
         {
@@ -126,7 +129,6 @@ public static class RuleExpressionCompiler
 
     private static Expression ExtractContextValue(ParameterExpression ctx, string fieldName, Type targetType)
     {
-        var getValMethod = typeof(RuleContextAccessor).GetMethod(nameof(RuleContextAccessor.GetFieldValue))!;
-        return Expression.Call(getValMethod, ctx, Expression.Constant(fieldName));
+        return Expression.Call(GetFieldValueMethod, ctx, Expression.Constant(fieldName));
     }
 }

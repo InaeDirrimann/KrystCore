@@ -3,21 +3,14 @@ namespace KrystCore.Rules;
 /// <summary>
 /// Immutable 64-bit permission bitmask providing zero-allocation authorization checks.
 /// </summary>
-public readonly struct PermissionBitmask : IEquatable<PermissionBitmask>
+public readonly record struct PermissionBitmask(ulong Value) : IEquatable<PermissionBitmask>
 {
-    public ulong Value { get; }
-
-    public PermissionBitmask(ulong value)
-    {
-        Value = value;
-    }
-
     public bool HasPermission(ulong permissionFlag)
     {
         return (Value & permissionFlag) == permissionFlag;
     }
 
-    public bool HasPermission(PermissionBitmask required)
+    public bool HasPermission(in PermissionBitmask required)
     {
         return (Value & required.Value) == required.Value;
     }
@@ -37,26 +30,16 @@ public readonly struct PermissionBitmask : IEquatable<PermissionBitmask>
         return new PermissionBitmask(Value & ~permissionFlag);
     }
 
-    public static PermissionBitmask operator |(PermissionBitmask left, PermissionBitmask right)
+    public static PermissionBitmask operator |(in PermissionBitmask left, in PermissionBitmask right)
         => new(left.Value | right.Value);
 
-    public static PermissionBitmask operator &(PermissionBitmask left, PermissionBitmask right)
+    public static PermissionBitmask operator &(in PermissionBitmask left, in PermissionBitmask right)
         => new(left.Value & right.Value);
 
-    public static PermissionBitmask operator ~(PermissionBitmask mask)
+    public static PermissionBitmask operator ~(in PermissionBitmask mask)
         => new(~mask.Value);
 
-    public static bool operator ==(PermissionBitmask left, PermissionBitmask right)
-        => left.Value == right.Value;
-
-    public static bool operator !=(PermissionBitmask left, PermissionBitmask right)
-        => left.Value != right.Value;
-
-    public bool Equals(PermissionBitmask other) => Value == other.Value;
-
-    public override bool Equals(object? obj) => obj is PermissionBitmask other && Equals(other);
-
-    public override int GetHashCode() => Value.GetHashCode();
+    public bool Equals(in PermissionBitmask other) => Value == other.Value;
 
     public override string ToString() => $"0x{Value:X16}";
 }

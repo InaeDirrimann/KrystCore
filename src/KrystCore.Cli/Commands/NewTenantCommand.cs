@@ -54,7 +54,7 @@ public static class NewTenantCommand
 
     private static void WriteCsproj(string dir, string name)
     {
-        var content = $"""
+        var content = """
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
@@ -67,9 +67,10 @@ public static class NewTenantCommand
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>14</LangVersion>
   </PropertyGroup>
 
 </Project>

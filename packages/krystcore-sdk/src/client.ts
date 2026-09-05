@@ -98,7 +98,16 @@ export class KrystClient {
       return undefined as T;
     }
 
-    return (await response.json()) as T;
+    const text = await response.text();
+    if (!text || text.trim().length === 0) {
+      return undefined as T;
+    }
+
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      throw new KrystApiError(response.status, 'Invalid JSON response from server', text);
+    }
   }
 
   public async getContentList<TData = Record<string, unknown>>(

@@ -77,19 +77,53 @@ public static class AuditCommand
     private static int ScanFileForViolations(string filePath, string[] forbiddenTerms)
     {
         var violations = 0;
-        var lines = File.ReadAllLines(filePath);
+        var lineNumber = 0;
+        var inBlockComment = false;
 
-        for (var i = 0; i < lines.Length; i++)
+        foreach (var rawLine in File.ReadLines(filePath))
         {
-            var line = lines[i].AsSpan().Trim();
-            if (line.IsEmpty || line.StartsWith("//") || line.StartsWith("/*")) continue;
+            lineNumber++;
+            var line = rawLine.AsSpan().Trim();
+            if (line.IsEmpty) continue;
+
+            if (inBlockComment)
+            {
+                var endIdx = line.IndexOf("*/".AsSpan(), StringComparison.Ordinal);
+                if (endIdx >= 0)
+                {
+                    inBlockComment = false;
+                    line = line[(endIdx + 2)..].Trim();
+                    if (line.IsEmpty) continue;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            if (line.StartsWith("//")) continue;
+
+            if (line.StartsWith("/*"))
+            {
+                var endIdx = line.IndexOf("*/".AsSpan(), StringComparison.Ordinal);
+                if (endIdx >= 0)
+                {
+                    line = line[(endIdx + 2)..].Trim();
+                    if (line.IsEmpty) continue;
+                }
+                else
+                {
+                    inBlockComment = true;
+                    continue;
+                }
+            }
 
             var lineLower = line.ToString().ToLowerInvariant();
             foreach (var term in forbiddenTerms)
             {
                 if (lineLower.Contains(term))
                 {
-                    Console.Error.WriteLine($"[BREACH] {filePath}:{i + 1} - Found forbidden keyword '{term}'");
+                    Console.Error.WriteLine($"[BREACH] {filePath}:{lineNumber} - Found forbidden keyword '{term}'");
                     violations++;
                 }
             }
